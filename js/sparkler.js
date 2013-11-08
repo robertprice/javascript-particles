@@ -18,32 +18,67 @@ var Sparkler = function () {
         document.body.appendChild(canvas);
 
         // fire off an explosion where the user clicks
-        canvas.onclick = function (e) {
-            var hue = Math.random() * 255;  // create a random colour for the explosion
-            for (var i = 0; i < 200; i++) {
-                createParticle({
-                    x: e.x,
-                    y: e.y
-                }, {
-                }, hue);
-            }
-        };
+        canvas.addEventListener("click", onClick);
 
-        tick();
+        //tick();
+        tickDuffsDevice();
     }
+    
+    function onClick(e) {
+        var hue = Math.random() * 255;  // create a random colour for the explosion
+        for (var i = 0; i < 200; i++) {
+            createParticle({
+                x: e.clientX,
+                y: e.clientY
+            }, {
+            }, hue);
+        }
+    }
+        
 
+    // original tick method
     function tick() {
         clearCanvas();
         var len = particles.length;
         while (len--) {
-            var particle = particles[len];
-            if (particle.update()) {
-                particles.splice(len, 1);
-            }
-            particle.render(ctx);
+            drawParticle(len);
         }
 
         requestAnimationFrame(tick);    // draw the next frame when ready
+    }
+
+    // replacement tick method using loop unrolling / duffs device
+    function tickDuffsDevice() {
+        clearCanvas();
+
+        var len = particles.length;
+        var i = len;
+        var n = len % 8;
+        while (n--) {
+            drawParticle(--i);
+        }
+
+        n = parseInt(len / 8, 10);
+        while (n--) {
+            drawParticle(--i);
+            drawParticle(--i);
+            drawParticle(--i);
+            drawParticle(--i);
+            drawParticle(--i);
+            drawParticle(--i);
+            drawParticle(--i);
+            drawParticle(--i);
+        }
+
+        requestAnimationFrame(tickDuffsDevice);
+    }
+
+    function drawParticle(i) {
+        var particle = particles[i];
+        if (particle.update()) {
+            particles.splice(i, 1); // remove the particle if no longer visible.
+        }
+        particle.render(ctx);
     }
 
     function clearCanvas() {
@@ -144,6 +179,6 @@ Particle.prototype = {
     }
 };
 
-window.onload = function () {
+window.addEventListener("load", function () {
     Sparkler.init();
-};
+});
