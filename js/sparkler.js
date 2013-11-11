@@ -26,7 +26,7 @@ var Sparkler = function () {
     
     function onClick(e) {
         var hue = Math.random() * 255;  // create a random colour for the explosion
-        for (var i = 0; i < 200; i++) {
+        for (var i = 0; i < 300; i++) {
             createParticle({
                 x: e.clientX,
                 y: e.clientY
@@ -98,6 +98,9 @@ var Sparkler = function () {
         velocity = velocity || {};
         hue = hue || 255;
 
+        // choose a direction for this particle
+        var angleRadians = Math.random() * 6.2831853;   // random number between 0 and 2pi 
+
         particles.push(
             new Particle(
                 {
@@ -105,8 +108,10 @@ var Sparkler = function () {
                     y: position.y || (windowSize.height / 2)
                 },
                 {
-                    x: velocity.x || Math.random() * 10 - 5,
-                    y: velocity.y || Math.random() * 10 - 5
+                    // x: velocity.x || Math.random() * 10 - 5,
+                    // y: velocity.y || Math.random() * 10 - 5
+                    x: velocity.x || Math.sin(angleRadians) * (Math.random() * 5),
+                    y: velocity.y || Math.cos(angleRadians) * (Math.random() * 5)
                 },
                 hue
             )
