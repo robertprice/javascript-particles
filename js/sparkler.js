@@ -23,7 +23,7 @@ var Sparkler = function () {
         //tick();
         tickDuffsDevice();
     }
-    
+
     function onClick(e) {
         var hue = Math.random() * 255;  // create a random colour for the explosion
         for (var i = 0; i < 300; i++) {
@@ -34,7 +34,7 @@ var Sparkler = function () {
             }, hue);
         }
     }
-        
+
 
     // original tick method
     function tick() {
@@ -153,7 +153,7 @@ Particle.prototype = {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
 
-        //this.velocity.y += 0.15; // fake gravity by increasing velocity downwards
+        this.velocity.y += 0.04; // fake gravity by increasing velocity downwards
 
         this.alpha -= 0.005;    // reduce the alpha to fade out the particle
 
